@@ -1,0 +1,37 @@
+id,milestone,discipline,title,depends_on,gate,definition_of_done
+US506C-000,M1,Docs,Publish v2 pilot roadmap and repository writing guide,,G1,"README links to the versioned architecture, M0-M9 roadmap, backlog, and writing guide; no approval is represented as complete"
+US506C-001,M0,Legal,Define issuer/SPV and legal security class,,G0,"Legal memo, entity/cap model"
+US506C-002,M0,Legal,Assess broker-dealer/placement agent activities/compensation,US506C-001,G0,Counsel written decision and partner role matrix
+US506C-003,M0,Legal,Identify 506(d) covered persons and screening program,US506C-001,G0,Roster and evidence process
+US506C-004,M0,Product,Finalize legal first-sale trigger and refunds,US506C-001,G0,Contractual event mapping
+US506C-005,M1,Platform,Deploy environments IaC and secret controls,US506C-001,G1,Encrypted secrets and IAM review
+US506C-006,M1,BE,Set up OIDC sessions MFA/RBAC,US506C-005,G1,Cross-role negative tests
+US506C-007,M1,BE,Design immutable event audit trail + WORM export,US506C-005,G1,Hash provenance and recoverability
+US506C-008,M1,FE,Shared accessible design system and risk components,US506C-006,G1,WCAG AA review
+US506C-009,M2,BE,Issuer and covered-person screening models,US506C-003,G2,Case review + approved roster
+US506C-010,M2,BE,Signed offering metadata/document version API,US506C-001;US506C-007,G2,Tamper and hash test
+US506C-011,M2,FE,Public offer page and marketing approval viewer,US506C-010;US506C-008,G2,No unapproved asset exposed
+US506C-012,M2,BE,Dual approval CMS and campaign kill switch,US506C-010,G2,Two human independent approvals
+US506C-013,M3,BE,KYC/KYB and OFAC vendor webhooks,US506C-006,G3,Replay/stale/denial tests
+US506C-014,M3,BE,Accreditation method/evidence/issuer-reliance data,US506C-013,G3,Verifier method + issuer audit proof
+US506C-015,M3,BE,Fail-closed action-level PDP,US506C-009;US506C-014,G3,PDP adversarial matrix 100%
+US506C-016,M3,FE,Investor accredited/KYC flow and exception states,US506C-013;US506C-014;US506C-008,G3,Self-attestation never enables buy
+US506C-017,M3,BE,Staff compliance case console API / audit,US506C-007;US506C-015,G3,Break glass audit and separation
+US506C-018,M4,BE,Reservation and allocation concurrency control,US506C-015,G4a,1000 competing calls no over-allocation
+US506C-019,M4,BE,Signature provider + document binding,US506C-010;US506C-018,G4a,Document hash immutable before countersign
+US506C-020,M4,BE,Authorized issuer acceptance and first sale event,US506C-004;US506C-019,G4a,Irrevocable timestamp independently verified
+US506C-021,M4,BE,USD bank/escrow provider adapter,US506C-018,G4a,"No platform custody, reconciled provider IDs"
+US506C-022,M4,BE,Immutable balanced journal + refund handling,US506C-021,G4a,Statement reconciliation + reversal audit
+US506C-023,M4,FE,Investor checkout/e-sign/hosted bank screens,US506C-019;US506C-021,G4a,Pending vs settled clearly shown
+US506C-024,M4,QA,Full provider failure and parallel racing suite,US506C-020;US506C-022,G4a,"Webhooks, crashes, ACH returns pass"
+US506C-025,M5,BE,Registrar / issuer legal holder adapter,US506C-020;US506C-022,G4b,Signed position ack and difference alerts
+US506C-026,M5,BE,Form D/blue sky clock and receipt tracker,US506C-020,G4b,15-day federal task; state rules counsel-set
+US506C-027,M5,FE,Portfolio restricted-security statement UI,US506C-025,G4b,Only TA-confirmed owned positions
+US506C-028,M5,FE,Issuer filings/admin support consoles,US506C-026;US506C-017,G4b,Proof of actual external filing
+US506C-029,M6,Ops,Controlled live gate checklist + tabletop,US506C-024;US506C-025;US506C-026,G4,Six-stakeholder signoff and kill switch
+US506C-030,M7,Ops,Daily bank/legal holder reconciliation runbook,US506C-029,POST_G4,30-day break-free observation
+US506C-031,M8,SC,Permissioned series token interface/testnet,US506C-001,G5,"ERC-3643 compatible design, not live"
+US506C-032,M8,SC,EIP-712 authority nonces + legal ack checks,US506C-025;US506C-031,G5,Replay and role separation proofs
+US506C-033,M8,SC,Foundry invariant and fuzz campaigns,US506C-032,G5,Supply/transfer/role properties green
+US506C-034,M8,SC,"Finality indexer, reorg and reconciliation",US506C-032,G5,Deep reorg never duplicates issuance
+US506C-035,M8,Security,Independent contract audit and key ceremony,US506C-033;US506C-034,G5,Critical/high issues closed and signed

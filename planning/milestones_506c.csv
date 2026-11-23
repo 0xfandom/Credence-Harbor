@@ -1,0 +1,11 @@
+id,start_week,end_week,title,gate,owner,exit_criterion
+M0,1,4,US 506(c) operating model,G0,Issuer counsel / product,BD determination; approved security terms; 506(d) process
+M1,5,8,Security and access foundation,G1,BE / SRE / security,OIDC/RBAC; vendor contracts; WORM evidence
+M2,9,12,Issuer offering & public marketing,G2,FE / BE / issuer counsel,Versioned PPM/marketing signoffs; signed asset hash
+M3,11,18,Accreditation / KYB / PDP,G3,BE / compliance / FE,Method-proof + issuer reliance; no self-attestation purchase
+M4,17,26,Subscription / escrow / ledger,G4a,BE / finance / FE,Irrevocable sale semantics; provider matched receipts
+M5,23,30,Registrar / filings / support,G4b,BE / issuer legal,Form D clock; state notices; ownership ack
+M6,31,36,Controlled US accredited investor pilot,G4,Sponsor / issuer / compliance,All live checklists signed; one issuer/offering
+M7,37,40,Reconciliation stabilization,POST_G4,Finance / SRE,30-day clean financial exception gate
+M8,28,44,"Optional token testnet/audit, release later",G5,SC / counsel / TA,"ERC-3643 restricted, no unauthorized mint"
+M9,45,52,Expansion decisions only,NEW_GATES,Product / legal,Separate jurisdiction and product approvals
