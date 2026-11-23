@@ -18,13 +18,14 @@ class PlanningValidationTests(unittest.TestCase):
         (self.root / "README.md").write_text(
             "[Overview](docs/overview.md) [Section](#section)\n", encoding="utf-8"
         )
+        gates = ["G0", "G1", "G2", "G3", "G4a", "G4b", "G4", "POST_G4", "G5", "NEW_GATES"]
         self.milestones = [
             {
                 "id": f"M{number}",
                 "start_week": str(number + 1),
                 "end_week": str(number + 2),
                 "title": f"Milestone {number}",
-                "gate": "G0",
+                "gate": gates[number],
                 "owner": "Team",
                 "exit_criterion": "Documented",
             }
