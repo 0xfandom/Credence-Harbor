@@ -36,3 +36,4 @@ US506C-033,M8,SC,Foundry invariant and fuzz campaigns,US506C-032,G5,Supply/trans
 US506C-034,M8,SC,"Finality indexer, reorg and reconciliation",US506C-032,G5,Deep reorg never duplicates issuance
 US506C-035,M8,Security,Independent contract audit and key ceremony,US506C-033;US506C-034,G5,Critical/high issues closed and signed
 US506C-036,M1,Quality,Validate roadmap files and README links in CI,,G1,"Python standard-library checks enforce CSV IDs, milestone/dependency references, acyclic dependencies, valid week ranges, and README links; tests pass; repository-only check does not satisfy or waive product release gates"
+US506C-037,M1,Quality,Validate roadmap release gate references,,G1,"Planning validator and unit tests reject unknown release gate labels and backlog/milestone gate mismatches; development-only check changes no product release status or live workflow"

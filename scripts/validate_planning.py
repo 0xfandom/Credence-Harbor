@@ -30,6 +30,7 @@ BACKLOG_COLUMNS = [
     "definition_of_done",
 ]
 EXPECTED_MILESTONES = {f"M{number}" for number in range(10)}
+EXPECTED_GATES = {"G0", "G1", "G2", "G3", "G4a", "G4b", "G4", "POST_G4", "G5", "NEW_GATES"}
 MARKDOWN_LINK = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+[^)]*)?\)")
 
 
@@ -117,7 +118,15 @@ def validate_repository(root: Path) -> tuple[list[str], dict[str, int]]:
             f"missing={missing}, unexpected={unexpected}"
         )
 
+    milestone_gates: dict[str, str] = {}
     for index, milestone in enumerate(milestones, start=2):
+        milestone_id = milestone.get("id", "")
+        gate = milestone.get("gate", "")
+        milestone_gates[milestone_id] = gate
+        if gate not in EXPECTED_GATES:
+            errors.append(
+                f"planning/milestones_506c.csv:{index}: unknown gate {gate!r}"
+            )
         try:
             start_week = int(milestone.get("start_week", ""))
             end_week = int(milestone.get("end_week", ""))
@@ -133,9 +142,19 @@ def validate_repository(root: Path) -> tuple[list[str], dict[str, int]]:
     for index, task in enumerate(backlog, start=2):
         task_id = task.get("id", "")
         milestone_id = task.get("milestone", "")
+        gate = task.get("gate", "")
+        if gate not in EXPECTED_GATES:
+            errors.append(
+                f"planning/backlog_506c.csv:{index}: unknown gate {gate!r}"
+            )
         if milestone_id not in milestone_ids:
             errors.append(
                 f"planning/backlog_506c.csv:{index}: unknown milestone {milestone_id!r}"
+            )
+        elif gate != milestone_gates.get(milestone_id):
+            errors.append(
+                f"planning/backlog_506c.csv:{index}: gate {gate!r} does not match "
+                f"milestone {milestone_id!r} gate {milestone_gates[milestone_id]!r}"
             )
         task_dependencies = [
             value.strip()

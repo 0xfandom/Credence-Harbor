@@ -74,6 +74,21 @@ class PlanningValidationTests(unittest.TestCase):
         self.assertEqual(summary["backlog_items"], 2)
         self.assertEqual(summary["readme_relative_links"], 1)
 
+    def test_unknown_milestone_gate_fails(self):
+        self.milestones[0]["gate"] = "G6"
+        self._write_csv("planning/milestones_506c.csv", self.milestones)
+        self.assertIn("unknown gate 'G6'", self._errors())
+
+    def test_unknown_backlog_gate_fails(self):
+        self.backlog[0]["gate"] = "G6"
+        self._write_csv("planning/backlog_506c.csv", self.backlog)
+        self.assertIn("unknown gate 'G6'", self._errors())
+
+    def test_backlog_gate_must_match_milestone(self):
+        self.backlog[0]["gate"] = "G1"
+        self._write_csv("planning/backlog_506c.csv", self.backlog)
+        self.assertIn("does not match milestone 'M0' gate 'G0'", self._errors())
+
     def test_duplicate_backlog_id_fails(self):
         self.backlog[1]["id"] = self.backlog[0]["id"]
         self._write_csv("planning/backlog_506c.csv", self.backlog)
