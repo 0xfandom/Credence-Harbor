@@ -18,13 +18,14 @@ class PlanningValidationTests(unittest.TestCase):
         (self.root / "README.md").write_text(
             "[Overview](docs/overview.md) [Section](#section)\n", encoding="utf-8"
         )
+        gates = ["G0", "G1", "G2", "G3", "G4a", "G4b", "G4", "POST_G4", "G5", "NEW_GATES"]
         self.milestones = [
             {
                 "id": f"M{number}",
                 "start_week": str(number + 1),
                 "end_week": str(number + 2),
                 "title": f"Milestone {number}",
-                "gate": "G0",
+                "gate": gates[number],
                 "owner": "Team",
                 "exit_criterion": "Documented",
             }
@@ -73,6 +74,21 @@ class PlanningValidationTests(unittest.TestCase):
         self.assertEqual(summary["milestones"], 10)
         self.assertEqual(summary["backlog_items"], 2)
         self.assertEqual(summary["readme_relative_links"], 1)
+
+    def test_unknown_milestone_gate_fails(self):
+        self.milestones[0]["gate"] = "G6"
+        self._write_csv("planning/milestones_506c.csv", self.milestones)
+        self.assertIn("unknown gate 'G6'", self._errors())
+
+    def test_unknown_backlog_gate_fails(self):
+        self.backlog[0]["gate"] = "G6"
+        self._write_csv("planning/backlog_506c.csv", self.backlog)
+        self.assertIn("unknown gate 'G6'", self._errors())
+
+    def test_backlog_gate_must_match_milestone(self):
+        self.backlog[0]["gate"] = "G1"
+        self._write_csv("planning/backlog_506c.csv", self.backlog)
+        self.assertIn("does not match milestone 'M0' gate 'G0'", self._errors())
 
     def test_duplicate_backlog_id_fails(self):
         self.backlog[1]["id"] = self.backlog[0]["id"]
