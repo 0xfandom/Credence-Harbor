@@ -75,6 +75,11 @@ class PlanningValidationTests(unittest.TestCase):
         self.assertEqual(summary["backlog_items"], 2)
         self.assertEqual(summary["readme_relative_links"], 1)
 
+    def test_milestones_must_follow_m0_to_m9_order(self):
+        self.milestones[0], self.milestones[1] = self.milestones[1], self.milestones[0]
+        self._write_csv("planning/milestones_506c.csv", self.milestones)
+        self.assertIn("expected row order M0-M9", self._errors())
+
     def test_unknown_milestone_gate_fails(self):
         self.milestones[0]["gate"] = "G6"
         self._write_csv("planning/milestones_506c.csv", self.milestones)

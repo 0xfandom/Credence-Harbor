@@ -30,6 +30,7 @@ BACKLOG_COLUMNS = [
     "definition_of_done",
 ]
 EXPECTED_MILESTONES = {f"M{number}" for number in range(10)}
+EXPECTED_MILESTONE_ORDER = [f"M{number}" for number in range(10)]
 EXPECTED_GATES = {"G0", "G1", "G2", "G3", "G4a", "G4b", "G4", "POST_G4", "G5", "NEW_GATES"}
 MARKDOWN_LINK = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+[^)]*)?\)")
 
@@ -110,6 +111,12 @@ def validate_repository(root: Path) -> tuple[list[str], dict[str, int]]:
     milestone_ids = _check_unique_ids(
         milestones, "id", "planning/milestones_506c.csv", errors
     )
+    milestone_order = [milestone.get("id", "") for milestone in milestones]
+    if milestone_order != EXPECTED_MILESTONE_ORDER:
+        errors.append(
+            "planning/milestones_506c.csv: expected row order M0-M9; "
+            f"got {milestone_order}"
+        )
     if milestone_ids != EXPECTED_MILESTONES:
         missing = sorted(EXPECTED_MILESTONES - milestone_ids)
         unexpected = sorted(milestone_ids - EXPECTED_MILESTONES)
