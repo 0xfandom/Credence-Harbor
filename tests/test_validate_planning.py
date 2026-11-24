@@ -51,6 +51,24 @@ class PlanningValidationTests(unittest.TestCase):
                 "gate": "G1",
                 "definition_of_done": "Complete",
             },
+            {
+                "id": "TASK-003",
+                "milestone": "M1",
+                "discipline": "Docs",
+                "title": "Third task",
+                "depends_on": "TASK-002",
+                "gate": "G1",
+                "definition_of_done": "Complete",
+            },
+            {
+                "id": "TASK-004",
+                "milestone": "M2",
+                "discipline": "Docs",
+                "title": "Fourth task",
+                "depends_on": "TASK-002",
+                "gate": "G2",
+                "definition_of_done": "Complete",
+            },
         ]
         self._write_csv("planning/milestones_506c.csv", self.milestones)
         self._write_csv("planning/backlog_506c.csv", self.backlog)
@@ -73,7 +91,7 @@ class PlanningValidationTests(unittest.TestCase):
         errors, summary = validate_repository(self.root)
         self.assertEqual(errors, [])
         self.assertEqual(summary["milestones"], 10)
-        self.assertEqual(summary["backlog_items"], 2)
+        self.assertEqual(summary["backlog_items"], 4)
         self.assertEqual(summary["readme_relative_links"], 1)
 
     def test_milestones_must_follow_m0_to_m9_order(self):
@@ -105,6 +123,11 @@ class PlanningValidationTests(unittest.TestCase):
         self.backlog[1]["depends_on"] = "MISSING"
         self._write_csv("planning/backlog_506c.csv", self.backlog)
         self.assertIn("unknown dependency", self._errors())
+
+    def test_forward_milestone_dependency_fails(self):
+        self.backlog[1]["depends_on"] = "TASK-004"
+        self._write_csv("planning/backlog_506c.csv", self.backlog)
+        self.assertIn("depends on later milestone 'M2'", self._errors())
 
     def test_dependency_cycle_fails(self):
         self.backlog[0]["depends_on"] = "TASK-002"
