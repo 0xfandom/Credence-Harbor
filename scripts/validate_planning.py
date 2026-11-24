@@ -145,6 +145,13 @@ def validate_repository(root: Path) -> tuple[list[str], dict[str, int]]:
             )
 
     backlog_ids = _check_unique_ids(backlog, "id", "planning/backlog_506c.csv", errors)
+    milestone_rank = {
+        milestone_id: index
+        for index, milestone_id in enumerate(EXPECTED_MILESTONE_ORDER)
+    }
+    backlog_milestones = {
+        task.get("id", ""): task.get("milestone", "") for task in backlog
+    }
     dependencies: dict[str, list[str]] = {}
     for index, task in enumerate(backlog, start=2):
         task_id = task.get("id", "")
@@ -174,6 +181,18 @@ def validate_repository(root: Path) -> tuple[list[str], dict[str, int]]:
                 errors.append(
                     f"planning/backlog_506c.csv:{index}: unknown dependency {dependency!r}"
                 )
+            if dependency in backlog_milestones:
+                dependency_milestone = backlog_milestones[dependency]
+                if (
+                    milestone_id in milestone_rank
+                    and dependency_milestone in milestone_rank
+                    and milestone_rank[dependency_milestone] > milestone_rank[milestone_id]
+                ):
+                    errors.append(
+                        f"planning/backlog_506c.csv:{index}: task {task_id!r} in "
+                        f"{milestone_id!r} depends on later milestone "
+                        f"{dependency_milestone!r} task {dependency!r}"
+                    )
             if dependency == task_id:
                 errors.append(
                     f"planning/backlog_506c.csv:{index}: task {task_id!r} depends on itself"
