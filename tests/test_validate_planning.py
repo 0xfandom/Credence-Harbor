@@ -11,7 +11,8 @@ from validate_planning import validate_repository  # noqa: E402
 class PlanningValidationTests(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
-        self.root = Path(self.temp_dir.name)
+        self.root = Path(self.temp_dir.name) / "repo"
+        self.root.mkdir()
         (self.root / "planning").mkdir()
         (self.root / "docs").mkdir()
         (self.root / "docs" / "overview.md").write_text("Overview\n", encoding="utf-8")
@@ -113,6 +114,14 @@ class PlanningValidationTests(unittest.TestCase):
     def test_broken_readme_link_fails(self):
         (self.root / "README.md").write_text("[Missing](docs/missing.md)\n", encoding="utf-8")
         self.assertIn("relative link target does not exist", self._errors())
+
+    def test_readme_link_cannot_escape_repository(self):
+        outside_target = self.root.parent / "outside.md"
+        outside_target.write_text("Outside\n", encoding="utf-8")
+        (self.root / "README.md").write_text(
+            "[Outside](..%2Foutside.md)\n", encoding="utf-8"
+        )
+        self.assertIn("relative link escapes repository", self._errors())
 
     def test_invalid_milestone_week_range_fails(self):
         self.milestones[0]["end_week"] = "0"
